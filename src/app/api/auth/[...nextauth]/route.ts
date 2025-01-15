@@ -18,8 +18,8 @@ export const authOptions: NextAuthOptions = {
   ],
 
   session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60,
+    strategy: 'jwt', // 서버에 저장된 상태 없이도 세션 유지
+    maxAge: 365 * 24 * 60 * 60, // 만료 시간 1년
   },
 
   callbacks: {

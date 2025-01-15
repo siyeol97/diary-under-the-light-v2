@@ -3,6 +3,8 @@ import PushNotificationManager from '@/components/PushNotificationManager';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
+import Link from 'next/link';
+import SignOut from '@/components/SignOut';
 
 export const metadata: Metadata = {
   title: '푸시 알림 테스트 화면',
@@ -23,8 +25,11 @@ export default async function Page() {
           />
           <p>유저 이름: {session?.user.name}</p>
           <p>이메일 : {session?.user.email}</p>
+          <SignOut />
         </div>
-      ) : null}
+      ) : (
+        <Link href={'/auth/signin'}>로그인 하기</Link>
+      )}
     </div>
   );
 }
