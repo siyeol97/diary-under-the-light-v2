@@ -3,7 +3,10 @@ import localFont from 'next/font/local';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Diary under the light',
+  title: {
+    template: '%s | 등잔밑일기',
+    default: 'Loading...',
+  },
   description: 'AI analysis of your emotions in your diary',
 };
 

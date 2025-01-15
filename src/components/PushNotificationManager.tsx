@@ -72,28 +72,28 @@ export default function PushNotificationManager() {
 
   // 푸시 알림이 지원되지 않는 브라우저 일 경우
   if (!isSupported) {
-    return <p>Push notifications are not supported in this browser.</p>;
+    return <p>푸시 알림을 지원하지 않는 브라우저 입니다.</p>;
   }
 
   return (
     <div>
-      <h3>Push Notifications</h3>
+      <h3>앱 푸시 알림</h3>
       {subscription ? (
         <>
-          <p>You are subscribed to push notifications.</p>
-          <button onClick={unsubscribeFromPush}>Unsubscribe</button>
+          <p>푸시 알림을 허용하셨습니다.</p>
+          <button onClick={unsubscribeFromPush}>푸시 알림 중지</button>
           <input
             type='text'
             placeholder='Enter notification message'
             value={message} // 푸시 알림 메세지
             onChange={(e) => setMessage(e.target.value)}
           />
-          <button onClick={sendTestNotification}>Send Test</button>
+          <button onClick={sendTestNotification}>푸시 알림 보내기</button>
         </>
       ) : (
         <>
-          <p>You are not subscribed to push notifications.</p>
-          <button onClick={subscribeToPush}>Subscribe</button>
+          <p>푸시 알림을 허용하지 않으셨습니다.</p>
+          <button onClick={subscribeToPush}>푸시 알림 허용하기</button>
         </>
       )}
     </div>
