@@ -15,10 +15,10 @@ export default async function Page() {
   const userImage = session?.user?.image ?? '/icon_192.png';
   return (
     <div>
-      <PushNotificationManager />
-      <InstallPrompt />
       {session ? (
         <div>
+          <PushNotificationManager />
+          <InstallPrompt />
           <img
             src={userImage}
             alt='user-profile'

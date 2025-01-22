@@ -1,6 +1,9 @@
 'use server';
 
+import { createClient } from '@/utils/supabase/createServerClient';
+import { getServerSession } from 'next-auth';
 import webpush, { PushSubscription } from 'web-push';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
 /**
  * Web Push 알림을 위한 서버 사이드 액션 파일
@@ -13,39 +16,109 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY! // VAPID 비공개 키
 );
 
-let subscription: PushSubscription | null = null; // 현재 구독 정보를 메모리에 저장 (개발 환경용)
+export async function getSubscription() {
+  const session = await getServerSession(authOptions);
+  const user_id = session?.user?.id;
+  if (!user_id) {
+    throw new Error('푸시 알림 구독 오류 : 사용자 정보를 찾을 수 없습니다.');
+  }
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('subscribe')
+    .select()
+    .eq('user_id', user_id);
+
+  if (error) {
+    console.error('Supabase 구독 정보 가져오기 오류:', error);
+    throw error;
+  }
+
+  if (data.length === 0) {
+    console.log('저장된 구독 정보가 없습니다.');
+    return null;
+  }
+
+  return JSON.parse(data[0].sub as string) as PushSubscription;
+}
 
 // 사용자의 푸시 알림 구독을 처리하는 함수
 export async function subscribeUser(sub: PushSubscription) {
   // sub: 브라우저에서 생성된 PushSubscription 객체
-  subscription = sub;
-  // 실제 프로덕션에서는 DB에 구독 정보를 저장해야 함
-  // 예시: await db.subscriptions.create({ data: sub })
-  return { success: true };
+  const session = await getServerSession(authOptions);
+  const user_id = session?.user?.id;
+  if (!user_id) {
+    throw new Error('푸시 알림 구독 오류 : 사용자 정보를 찾을 수 없습니다.');
+  }
+
+  const supabase = await createClient();
+  // 사용자의 구독 정보를 DB에 저장
+
+  const { data, error } = await supabase
+    .from('subscribe')
+    .insert([{ sub: JSON.stringify(sub), user_id: user_id }])
+    .select();
+
+  if (error) {
+    console.error('Supabase 푸시 알림 구독 오류:', error);
+    throw error;
+  }
+
+  if (data.length === 0) {
+    console.log('저장된 구독 정보가 없습니다.');
+    return null;
+  }
+
+  return JSON.parse(data[0].sub as string) as PushSubscription;
 }
 
 // 사용자의 푸시 알림 구독을 취소하는 함수
 export async function unsubscribeUser() {
-  subscription = null;
-  // 실제 프로덕션에서는 DB에서 구독 정보를 삭제해야 함
-  // 예시: await db.subscriptions.delete({ where: { ... } })
+  const session = await getServerSession(authOptions);
+  const user_id = session?.user?.id;
+  if (!user_id) {
+    throw new Error(
+      '푸시 알림 구독 취소 오류 : 사용자 정보를 찾을 수 없습니다.'
+    );
+  }
+
+  const supabase = await createClient();
+  // 사용자의 구독 정보를 DB에서 삭제
+  const { error } = await supabase
+    .from('subscribe')
+    .delete()
+    .eq('user_id', user_id);
+
+  if (error) {
+    console.error('Supabase 푸시 알림 구독 삭제 오류:', error);
+    throw error;
+  }
+
   return { success: true };
 }
 
 // 푸시 알림을 전송하는 함수
-export async function sendNotification(message: string) {
+export async function sendNotification(
+  subscription: PushSubscription,
+  message: string
+) {
   // message:전송할 메시지 내용
   if (!subscription) {
-    throw new Error('No subscription available');
+    throw new Error('푸시 알림 전송 오류 : 구독 정보를 찾을 수 없습니다.');
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    throw new Error('푸시 알림 전송 오류 : 사용자 정보를 찾을 수 없습니다.');
   }
 
   try {
     await webpush.sendNotification(
       subscription,
       JSON.stringify({
-        title: 'Test Notification', // 푸시 알림 제목
+        title: `안녕하세요 ${session.user.name}님!`, // 푸시 알림 제목
         body: message, // 푸시 알림 내용
-        icon: '/icon.png', // 푸시 알림 아이콘
+        icon: '/icon_256.png', // 푸시 알림 아이콘
       })
     );
     return { success: true };
