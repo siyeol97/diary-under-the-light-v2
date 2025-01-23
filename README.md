@@ -1,2 +1,1 @@
-# Diary-under-the-light-v2
-Diary under the light version 2
+# Diary under the light 2.0.0v
