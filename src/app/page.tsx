@@ -2,9 +2,9 @@ import InstallPrompt from '@/components/InstallPrompt';
 import PushNotificationManager from '@/components/PushNotificationManager';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]/route';
 import Link from 'next/link';
 import SignOut from '@/components/SignOut';
+import { authOptions } from '@/utils/authOptions';
 
 export const metadata: Metadata = {
   title: '푸시 알림 테스트 화면',

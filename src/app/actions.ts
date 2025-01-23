@@ -1,9 +1,9 @@
 'use server';
 
+import { authOptions } from '@/utils/authOptions';
 import { createClient } from '@/utils/supabase/createServerClient';
 import { getServerSession } from 'next-auth';
 import webpush, { PushSubscription } from 'web-push';
-import { authOptions } from './api/auth/[...nextauth]/route';
 
 /**
  * Web Push 알림을 위한 서버 사이드 액션 파일
