@@ -1,8 +1,8 @@
 import { getServerSession } from 'next-auth';
 import AudioRecord from './components/AudioRecord';
-import { authOptions } from '../api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { authOptions } from '@/utils/authOptions';
 
 export default async function page() {
   const session = await getServerSession(authOptions);
