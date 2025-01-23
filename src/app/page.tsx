@@ -19,6 +19,7 @@ export default async function Page() {
         <div>
           <PushNotificationManager />
           <InstallPrompt />
+          <Link href={'/write'}>일기 녹음하러 가기</Link>
           <img
             src={userImage}
             alt='user-profile'
