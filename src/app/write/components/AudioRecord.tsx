@@ -21,33 +21,48 @@ export default function AudioRecord({ session }: Props) {
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태 관리
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // 녹음 URL 관리 (audio 태그에 사용)
   const [diaries, setDiaries] = useState<Diary[]>([]); // 일기 목록 관리
+  const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
+  const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
 
   useEffect(() => {
     const updateDiaryList = async () => {
       const diaryList = await getDiaries(session.user.id!);
       setDiaries(diaryList);
     };
+
+    setIsIOS(
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window)
+    );
+
+    setIsSafari(navigator.userAgent.indexOf('Safari') !== -1);
+
     updateDiaryList();
   }, [audioUrl]);
 
   const startRecording = async () => {
+    let mimeType = 'webm'; // 녹음 데이터 타입
+    if (isIOS || isSafari) {
+      mimeType = 'mp4'; // iOS or Safari에서는 mp4로 설정
+    }
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); // 오디오 스트림 요청
-    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' }); // MediaRecorder 생성
+    const mediaRecorder = new MediaRecorder(stream, {
+      mimeType: `audio/${mimeType}`,
+    }); // MediaRecorder 생성
 
     const chunks: BlobPart[] = []; // 녹음 데이터 저장 배열
     mediaRecorder.ondataavailable = (event) => chunks.push(event.data); // 녹음 데이터 이벤트 핸들러
 
     // 녹음 중지 이벤트 핸들러
     mediaRecorder.onstop = async () => {
-      const recordedBlob = new Blob(chunks, { type: 'audio/webm' }); // 녹음 데이터 Blob 생성
+      const recordedBlob = new Blob(chunks, { type: `audio/${mimeType}` }); // 녹음 데이터 Blob 생성
       const audioUrl = URL.createObjectURL(recordedBlob); // 녹음 데이터 URL 생성 (audio 태그에 사용)
 
       // 녹음 데이터 File 생성 (supabase에 업로드할 때 사용)
       const recordedFile = new File(
         [recordedBlob],
-        `${formatDate(new Date())}.webm`,
+        `${formatDate(new Date())}.${mimeType}`,
         {
-          type: 'audio/webm',
+          type: `audio/${mimeType}`,
         }
       );
 
