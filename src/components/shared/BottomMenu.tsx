@@ -24,7 +24,7 @@ const menu: Menu[] = [
     id: 4,
     name: 'diary',
     href: '/diary',
-    icon: 'book',
+    icon: 'diary',
   },
   {
     id: 5,
