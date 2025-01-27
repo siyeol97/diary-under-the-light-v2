@@ -9,6 +9,9 @@ import {
   unsubscribeUser,
 } from '@/app/actions';
 import { PushSubscription } from 'web-push';
+import { Switch } from '../ui/switch';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 /**
  * 웹 푸시 알림을 관리하는 컴포넌트
@@ -90,25 +93,27 @@ export default function PushNotificationManager() {
   }
 
   return (
-    <div>
-      <h3>앱 푸시 알림</h3>
-      {subscription ? (
-        <>
-          <p>푸시 알림을 허용하셨습니다.</p>
-          <button onClick={unsubscribeFromPush}>푸시 알림 중지</button>
-          <input
+    <div className='flex flex-col gap-4 w-full'>
+      <div className='flex px-6 py-4 justify-between items-center w-full '>
+        <h3>앱 푸시 알림</h3>
+        <Switch
+          checked={!!subscription}
+          onCheckedChange={
+            !!subscription ? unsubscribeFromPush : subscribeToPush
+          }
+        />
+      </div>
+      {/** 푸시 알림 테스트 */}
+      {!!subscription && (
+        <div className='flex flex-col gap-2 px-6 py-2'>
+          <Input
             type='text'
             placeholder='Enter notification message'
             value={message} // 푸시 알림 메세지
             onChange={(e) => setMessage(e.target.value)}
           />
-          <button onClick={sendTestNotification}>푸시 알림 보내기</button>
-        </>
-      ) : (
-        <>
-          <p>푸시 알림을 허용하지 않으셨습니다.</p>
-          <button onClick={subscribeToPush}>푸시 알림 허용하기</button>
-        </>
+          <Button onClick={sendTestNotification}>푸시 알림 보내기</Button>
+        </div>
       )}
     </div>
   );

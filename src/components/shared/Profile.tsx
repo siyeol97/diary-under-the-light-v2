@@ -13,7 +13,7 @@ export default function Profile(user: ProfileProps) {
   const userEmail = user?.email ?? '';
 
   return (
-    <div className='w-full flex flex-col items-center gap-5 py-20'>
+    <div className='w-full flex flex-col items-center gap-5 pt-20 pb-10'>
       <Avatar className='w-24 h-24'>
         <AvatarImage src={userImage} alt='user-profile' />
       </Avatar>
