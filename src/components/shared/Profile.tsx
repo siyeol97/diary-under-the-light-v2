@@ -1,4 +1,3 @@
-import SignOut from '../auth/SignOut';
 import { Avatar, AvatarImage } from '../ui/avatar';
 
 interface ProfileProps {
@@ -14,13 +13,14 @@ export default function Profile(user: ProfileProps) {
   const userEmail = user?.email ?? '';
 
   return (
-    <div>
-      <Avatar>
+    <div className='w-full flex flex-col items-center gap-5 py-20'>
+      <Avatar className='w-24 h-24'>
         <AvatarImage src={userImage} alt='user-profile' />
       </Avatar>
-      <p>유저 이름: {userName}</p>
-      <p>이메일 : {userEmail}</p>
-      <SignOut />
+      <div className='flex flex-col justify-center items-center'>
+        <h1 className='font-bold text-2xl'>{userName}</h1>
+        <p className='text-greyScale-400'>{userEmail}</p>
+      </div>
     </div>
   );
 }
