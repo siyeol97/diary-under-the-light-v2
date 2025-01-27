@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Button } from '../ui/button';
 
 export default function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false); // iOS 기기 여부
@@ -25,7 +26,7 @@ export default function InstallPrompt() {
 
   return (
     <div>
-      <h3>Install App</h3>
+      <Button variant='link'>Install App</Button>
       {isIOS && (
         <p>
           To install this app on your iOS device, tap the share button
