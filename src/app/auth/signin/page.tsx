@@ -1,14 +1,13 @@
-import { Metadata } from 'next';
-import OAuth from './components/OAuth';
+import { Metadata } from "next";
+import OAuth from "../../../components/auth/OAuth";
 
 export const metadata: Metadata = {
-  title: '로그인',
+  title: "로그인",
 };
 
 export default function page() {
   return (
-    <main>
-      로그인 페이지
+    <main className="flex justify-center items-center w-full h-screen">
       <OAuth />
     </main>
   );
