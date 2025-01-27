@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: '푸시 알림 테스트 화면',
+  title: '달력 보기',
 };
 
 export default async function Page() {
