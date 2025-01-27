@@ -75,7 +75,9 @@ export default function RecordButton({ session }: Props) {
   return (
     <>
       {isRecording ? (
-        <Button onClick={stopRecording}>녹음 중지</Button>
+        <Button variant='destructive' onClick={stopRecording}>
+          녹음 중
+        </Button>
       ) : (
         <Button onClick={startRecording}>녹음 시작</Button>
       )}
