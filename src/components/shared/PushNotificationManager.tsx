@@ -19,7 +19,7 @@ import { PushSubscription } from 'web-push';
 export default function PushNotificationManager() {
   const [isSupported, setIsSupported] = useState(false); // 브라우저의 푸시 알림 지원 여부
   const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null
+    null,
   ); // 현재 푸시 알림 구독 상태
   const [message, setMessage] = useState(''); // 사용자에게 표시할 상태 메시지
 
@@ -55,7 +55,7 @@ export default function PushNotificationManager() {
         const sub = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(
-            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
+            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
           ),
         });
         const serializedSub = JSON.parse(JSON.stringify(sub)); // 깊은 복사

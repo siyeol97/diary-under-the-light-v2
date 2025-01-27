@@ -12,16 +12,15 @@
   vertical-align: baseline;
   font-weight: 400;
 
-  --primary-100: #e7efe6;
-  --primary-200: #dbe7da;
-  --primary-300: #b4ceb2;
-  --primary-400: #8bbf82;
-  --primary-500: #70a96a;
-  --primary-600: #0b4d05;
-  --primary-700: #0b4805;
-  --primary-800: #083a04;
-  --primary-900: #062d03;
-  --primary-1000: #041f02;
+  --primary-100: #e5f2eb;
+  --primary-200: #c9e1d5;
+  --primary-300: #a7cfbd;
+  --primary-400: #86bda5;
+  --primary-500: #649b86;
+  --primary-600: #4c7b66;
+  --primary-700: #416753;
+  --primary-800: #355042;
+  --primary-900: #263a2f;
 
   --secondary-100: #eeccd4;
   --secondary-200: #e4b3bb;
@@ -31,7 +30,7 @@
   --secondary-600: #b1707a;
   --secondary-700: #9c5861;
   --secondary-800: #8a464f;
-  --secondary-800: #76303a;
+  --secondary-900: #76303a;
 
   --greyScale-white: #fff;
   --greyScale-10: #f9f9f9;

@@ -13,7 +13,7 @@ export default function InstallPrompt() {
    */
   useEffect(() => {
     setIsIOS(
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window)
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window),
     );
 
     setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
@@ -29,18 +29,12 @@ export default function InstallPrompt() {
       {isIOS && (
         <p>
           To install this app on your iOS device, tap the share button
-          <span
-            role='img'
-            aria-label='share icon'
-          >
+          <span role='img' aria-label='share icon'>
             {' '}
             ⎋{' '}
           </span>
           and then &quot;Add to Home Screen&quot;
-          <span
-            role='img'
-            aria-label='plus icon'
-          >
+          <span role='img' aria-label='plus icon'>
             {' '}
             ➕{' '}
           </span>

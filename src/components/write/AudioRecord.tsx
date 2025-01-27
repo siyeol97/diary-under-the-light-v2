@@ -31,7 +31,7 @@ export default function AudioRecord({ session }: Props) {
     };
 
     setIsIOS(
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window)
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window),
     );
 
     setIsSafari(navigator.userAgent.indexOf('Safari') !== -1);
@@ -63,7 +63,7 @@ export default function AudioRecord({ session }: Props) {
         `${formatDate(new Date())}.${mimeType}`,
         {
           type: `audio/${mimeType}`,
-        }
+        },
       );
 
       // supabase에 녹음 데이터 저장
@@ -96,11 +96,7 @@ export default function AudioRecord({ session }: Props) {
       {audioUrl && (
         <>
           <p>녹음완료</p>
-          <audio
-            controls
-            src={audioUrl}
-            style={{ width: '100%' }}
-          />
+          <audio controls src={audioUrl} style={{ width: '100%' }} />
         </>
       )}
       <p>녹음파일 리스트</p>
