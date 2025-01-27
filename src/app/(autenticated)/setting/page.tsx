@@ -1,12 +1,8 @@
-import InstallPrompt from '@/components/shared/InstallPrompt';
+import Profile from '@/components/shared/Profile';
+import PushNotificationManager from '@/components/shared/PushNotificationManager';
 import { authOptions } from '@/utils/authOptions';
-import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-
-export const metadata: Metadata = {
-  title: '푸시 알림 테스트 화면',
-};
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
@@ -16,8 +12,9 @@ export default async function Page() {
   }
 
   return (
-    <div className='flex justify-center items-center size-full'>
-      <InstallPrompt />
+    <div>
+      <Profile {...session.user} />
+      <PushNotificationManager />
     </div>
   );
 }

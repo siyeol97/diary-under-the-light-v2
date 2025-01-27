@@ -4,7 +4,7 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <main>
+    <main className='flex flex-col justify-between h-screen'>
       {children}
       <BottomMenu />
     </main>

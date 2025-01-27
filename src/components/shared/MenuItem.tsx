@@ -20,7 +20,7 @@ export default function MenuItem({
     <button
       onClick={onClick}
       className={cn(
-        'cursor-pointer flex items-center justify-center p-2 hover:bg-primary-500 hover:text-greyScale-20 transition-all duration-200 rounded-md',
+        'cursor-pointer flex items-center justify-center p-2 hover:bg-primary-500 hover:text-greyScale-20 text-greyScale-600 transition-all duration-200 rounded-md',
         {
           'bg-primary-800 text-white': isActive,
         },
