@@ -13,10 +13,10 @@ export default async function Page() {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center gap-10'>
+    <section className='flex flex-col justify-center items-center gap-10'>
       <Profile {...session.user} />
       <PushNotificationManager />
       <SignOut />
-    </div>
+    </section>
   );
 }
