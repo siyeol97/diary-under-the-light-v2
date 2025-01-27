@@ -1,4 +1,6 @@
+'use client';
 import { Menu } from '@/types/type';
+import { usePathname } from 'next/navigation';
 import MenuItem from './MenuItem';
 
 const menu: Menu[] = [
@@ -34,11 +36,17 @@ const menu: Menu[] = [
   },
 ];
 
-export default async function BottomMenu() {
+export default function BottomMenu() {
+  const currentPath = usePathname();
+
   return (
     <section className='flex justify-between items-center fixed bottom-0 w-full bg-greyScale-20 h-[80px] px-4'>
       {menu.map((menu) => (
-        <MenuItem menu={menu} key={menu.id} />
+        <MenuItem
+          menu={menu}
+          key={menu.id}
+          isActive={currentPath === menu.href}
+        />
       ))}
     </section>
   );
