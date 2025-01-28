@@ -13,13 +13,12 @@ interface Props {
 }
 
 export default function DiaryList({ session }: Props) {
-  const TODAY = new Date();
+  const TODAY = new Date(new Date().toDateString());
 
   const [date, setDate] = useState(TODAY); // 조회할 날짜
   const [diaryList, setDiaryList] = useState<Diary[]>(); // 일기 목록 관리
 
   useEffect(() => {
-    console.log(date);
     const updateDiaryList = async () => {
       const diaryList = await getDiaryAtDate(
         session.user.id!,
@@ -29,6 +28,8 @@ export default function DiaryList({ session }: Props) {
     };
     updateDiaryList();
   }, [date]);
+
+  console.log(date);
 
   return (
     <section className='flex flex-col gap-10 px-5 py-10 '>
