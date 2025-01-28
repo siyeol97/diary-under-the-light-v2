@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Button } from '../ui/button';
 
 export default function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false); // iOS 기기 여부
@@ -13,7 +14,7 @@ export default function InstallPrompt() {
    */
   useEffect(() => {
     setIsIOS(
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window)
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window),
     );
 
     setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
@@ -25,22 +26,16 @@ export default function InstallPrompt() {
 
   return (
     <div>
-      <h3>Install App</h3>
+      <Button variant='link'>Install App</Button>
       {isIOS && (
         <p>
           To install this app on your iOS device, tap the share button
-          <span
-            role='img'
-            aria-label='share icon'
-          >
+          <span role='img' aria-label='share icon'>
             {' '}
             ⎋{' '}
           </span>
           and then &quot;Add to Home Screen&quot;
-          <span
-            role='img'
-            aria-label='plus icon'
-          >
+          <span role='img' aria-label='plus icon'>
             {' '}
             ➕{' '}
           </span>

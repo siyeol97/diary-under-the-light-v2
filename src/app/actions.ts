@@ -13,7 +13,7 @@ import webpush, { PushSubscription } from 'web-push';
 webpush.setVapidDetails(
   'mailto:leesi2830@gmail.com',
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!, // VAPID 공개 키
-  process.env.VAPID_PRIVATE_KEY! // VAPID 비공개 키
+  process.env.VAPID_PRIVATE_KEY!, // VAPID 비공개 키
 );
 
 export async function getSubscription() {
@@ -77,7 +77,7 @@ export async function unsubscribeUser() {
   const user_id = session?.user?.id;
   if (!user_id) {
     throw new Error(
-      '푸시 알림 구독 취소 오류 : 사용자 정보를 찾을 수 없습니다.'
+      '푸시 알림 구독 취소 오류 : 사용자 정보를 찾을 수 없습니다.',
     );
   }
 
@@ -99,7 +99,7 @@ export async function unsubscribeUser() {
 // 푸시 알림을 전송하는 함수
 export async function sendNotification(
   subscription: PushSubscription,
-  message: string
+  message: string,
 ) {
   // message:전송할 메시지 내용
   if (!subscription) {
@@ -119,7 +119,7 @@ export async function sendNotification(
         title: `안녕하세요 ${session.user.name}님!`, // 푸시 알림 제목
         body: message, // 푸시 알림 내용
         icon: '/icon_256.png', // 푸시 알림 아이콘
-      })
+      }),
     );
     return { success: true };
   } catch (error) {
@@ -165,6 +165,24 @@ export async function getDiaries(userId: string) {
     .from('test_diary')
     .select()
     .eq('user_id', userId);
+
+  if (error) {
+    console.error(error);
+    throw error;
+  }
+
+  return data;
+}
+
+// diary 테이블에서 오늘 날짜의 데이터를 가져오는 함수
+export async function getDiaryAtDate(userId: string, createdAt: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('test_diary')
+    .select()
+    .eq('user_id', userId)
+    .gte('created_at', `${createdAt}T00:00:00.000Z`)
+    .lte('created_at', `${createdAt}T23:59:59.999Z`);
 
   if (error) {
     console.error(error);
