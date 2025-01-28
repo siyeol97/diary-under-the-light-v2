@@ -1,7 +1,6 @@
 export default function formatDateDiff(date: string): string {
-  const KR_TIMESTAMP = 9 * 60 * 60 * 1000;
-  const now = new Date(new Date().getTime() + KR_TIMESTAMP);
-  const dateObj = new Date(new Date(date).getTime() + KR_TIMESTAMP);
+  const now = new Date(new Date().getTime());
+  const dateObj = new Date(new Date(date).getTime());
 
   const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
 
