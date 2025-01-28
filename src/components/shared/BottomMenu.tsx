@@ -6,8 +6,8 @@ import MenuItem from './MenuItem';
 const menu: Menu[] = [
   {
     id: 1,
-    name: 'mindcare',
-    href: '/mindcare',
+    name: 'selfcare',
+    href: '/selfcare',
     icon: 'heart',
   },
   {

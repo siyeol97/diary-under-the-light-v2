@@ -5,5 +5,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <div>mindcare</div>;
+  return <div>selfcare</div>;
 }
