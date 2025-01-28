@@ -25,22 +25,20 @@ export default function InstallPrompt() {
   }
 
   return (
-    <div>
+    <div className='flex flex-col gap-5'>
       <Button variant='link'>Install App</Button>
       {isIOS && (
-        <p>
+        <div className='text-sm text-gray-500 text-center'>
           To install this app on your iOS device, tap the share button
           <span role='img' aria-label='share icon'>
-            {' '}
-            ⎋{' '}
+            ⎋
           </span>
           and then &quot;Add to Home Screen&quot;
           <span role='img' aria-label='plus icon'>
-            {' '}
-            ➕{' '}
+            ➕
           </span>
           .
-        </p>
+        </div>
       )}
     </div>
   );

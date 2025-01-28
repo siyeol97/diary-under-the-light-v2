@@ -18,18 +18,26 @@ export default function DiaryList({ session }: Props) {
   const [date, setDate] = useState(TODAY); // 조회할 날짜
   const [diaryList, setDiaryList] = useState<Diary[]>(); // 일기 목록 관리
 
+  const getDate = (date: Date) => {
+    const KOREA_TIMEZONE_OFFSET = 9 * 60; // 9 hours in minutes
+    const koreaDate = new Date(
+      date.getTime() + KOREA_TIMEZONE_OFFSET * 60 * 1000,
+    );
+    return koreaDate;
+  };
+
   useEffect(() => {
     const updateDiaryList = async () => {
       const diaryList = await getDiaryAtDate(
         session.user.id!,
-        date.toISOString().slice(0, 10),
+        getDate(date).toISOString().slice(0, 10),
       );
       setDiaryList(diaryList);
     };
     updateDiaryList();
   }, [date]);
 
-  console.log(date);
+  console.log(getDate(date).toISOString().slice(0, 10));
 
   return (
     <section className='flex flex-col gap-10 px-5 py-10 '>

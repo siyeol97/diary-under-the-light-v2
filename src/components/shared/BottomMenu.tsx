@@ -40,7 +40,7 @@ export default function BottomMenu() {
   const currentPath = usePathname();
 
   return (
-    <section className='flex justify-between items-center fixed bottom-0 w-full bg-greyScale-20 h-[80px] px-4'>
+    <section className='flex justify-between items-center fixed bottom-0 w-full bg-greyScale-20 h-[80px] px-4 pb-4'>
       {menu.map((menu) => (
         <MenuItem
           menu={menu}
