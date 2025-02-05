@@ -14,7 +14,7 @@ interface Props {
 export default function RecordButton({ session }: Props) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태 관리
-  const [audioUrl, setAudioUrl] = useState<string | null>(null); // 녹음 URL 관리 (audio 태그에 사용)
+  //const [audioUrl, setAudioUrl] = useState<string | null>(null); // 녹음 URL 관리 (audio 태그에 사용)
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
   const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
   const { load, transcode } = useConvertToMP3();
@@ -44,8 +44,8 @@ export default function RecordButton({ session }: Props) {
     mediaRecorder.onstop = async () => {
       const recordedBlob = new Blob(chunks, { type: `audio/${mimeType}` }); // 녹음 데이터 Blob 생성
 
-      const { audioBlob, audioURL } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
-      setAudioUrl(audioURL); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
+      const { audioBlob } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
+      //setAudioUrl(audioURL); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
 
       // 녹음 데이터 File 생성 (supabase에 업로드할 때 사용)
       const recordedFile = new File(
