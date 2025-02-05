@@ -129,7 +129,11 @@ export async function sendNotification(
 }
 
 // 녹음 파일을 저장하고 diary 테이블에 저장하는 함수
-export async function saveRecording(recordedFile: File, userId: string) {
+export async function saveRecording(
+  recordedFile: File,
+  userId: string,
+  sttText: string,
+) {
   const supabase = await createClient();
 
   const { data: recordingData, error: recordingError } = await supabase.storage
@@ -147,7 +151,13 @@ export async function saveRecording(recordedFile: File, userId: string) {
 
   const { data: diaryData, error: diaryError } = await supabase
     .from('test_diary')
-    .insert([{ recording_url: result.data.publicUrl, user_id: userId }])
+    .insert([
+      {
+        recording_url: result.data.publicUrl,
+        user_id: userId,
+        stt_text: sttText,
+      },
+    ])
     .select();
 
   if (diaryError) {
@@ -190,4 +200,21 @@ export async function getDiaryAtDate(userId: string, createdAt: string) {
   }
 
   return data;
+}
+
+export default async function getSpeechToText(audioFile: File) {
+  try {
+    const result = await fetch(`${process.env.NAVER_CLOVA_API_URL}?lang=Kor`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        'X-CLOVASPEECH-API-KEY': process.env.NAVER_CLOVA_SECRET_KEY!,
+      },
+      body: audioFile,
+    });
+    return result.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
