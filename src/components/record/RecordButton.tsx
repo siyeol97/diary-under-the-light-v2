@@ -84,12 +84,12 @@ export default function RecordButton({ session }: Props) {
       ) : (
         <Button onClick={startRecording}>녹음 시작</Button>
       )}
-      {audioUrl && (
+      {/* {audioUrl && (
         <>
           <p>녹음완료</p>
           <audio controls src={audioUrl} style={{ width: '100%' }} />
         </>
-      )}
+      )} */}
     </>
   );
 }
