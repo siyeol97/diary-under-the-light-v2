@@ -1,6 +1,6 @@
 'use client';
 
-import { saveRecording } from '@/app/actions';
+import getSpeechToText, { saveRecording } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import useConvertToMP3 from '@/hooks/useConvertToMP3';
 import formatDate from '@/utils/formatDate';
@@ -14,10 +14,11 @@ interface Props {
 export default function RecordButton({ session }: Props) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태 관리
-  //const [audioUrl, setAudioUrl] = useState<string | null>(null); // 녹음 URL 관리 (audio 태그에 사용)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null); // 녹음 URL 관리 (audio 태그에 사용)
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
   const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
   const { load, transcode } = useConvertToMP3();
+  const [sttText, setSttText] = useState<string | null>(null); // STT 결과 관리
 
   useEffect(() => {
     setIsIOS(
@@ -44,8 +45,8 @@ export default function RecordButton({ session }: Props) {
     mediaRecorder.onstop = async () => {
       const recordedBlob = new Blob(chunks, { type: `audio/${mimeType}` }); // 녹음 데이터 Blob 생성
 
-      const { audioBlob } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
-      //setAudioUrl(audioURL); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
+      const { audioBlob, audioURL } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
+      setAudioUrl(audioURL); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
 
       // 녹음 데이터 File 생성 (supabase에 업로드할 때 사용)
       const recordedFile = new File(
@@ -56,8 +57,11 @@ export default function RecordButton({ session }: Props) {
         },
       );
 
+      const { text } = await getSpeechToText(recordedFile); // STT API 호출
+      setSttText(text); // STT 결과 업데이트
+
       // supabase에 녹음 데이터 저장
-      await saveRecording(recordedFile, session.user.id!);
+      await saveRecording(recordedFile, session.user.id!, text);
     };
 
     mediaRecorder.start();
@@ -76,7 +80,7 @@ export default function RecordButton({ session }: Props) {
   };
 
   return (
-    <>
+    <section className='flex flex-col items-center'>
       {isRecording ? (
         <Button variant='destructive' onClick={stopRecording}>
           녹음 중
@@ -84,12 +88,13 @@ export default function RecordButton({ session }: Props) {
       ) : (
         <Button onClick={startRecording}>녹음 시작</Button>
       )}
-      {/* {audioUrl && (
+      {audioUrl && (
         <>
           <p>녹음완료</p>
           <audio controls src={audioUrl} style={{ width: '100%' }} />
+          <p>{sttText}</p>
         </>
-      )} */}
-    </>
+      )}
+    </section>
   );
 }
