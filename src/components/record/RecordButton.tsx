@@ -2,6 +2,7 @@
 
 import { saveRecording } from '@/app/actions';
 import { Button } from '@/components/ui/button';
+import useConvertToMP3 from '@/hooks/useConvertToMP3';
 import formatDate from '@/utils/formatDate';
 import { Session } from 'next-auth';
 import { useEffect, useRef, useState } from 'react';
@@ -16,14 +17,15 @@ export default function RecordButton({ session }: Props) {
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // 녹음 URL 관리 (audio 태그에 사용)
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
   const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
+  const { load, transcode } = useConvertToMP3();
 
   useEffect(() => {
     setIsIOS(
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window),
     );
-
     setIsSafari(navigator.userAgent.indexOf('Safari') !== -1);
-  }, [audioUrl]);
+    load();
+  }, []);
 
   const startRecording = async () => {
     let mimeType = 'webm'; // 녹음 데이터 타입
@@ -41,20 +43,21 @@ export default function RecordButton({ session }: Props) {
     // 녹음 중지 이벤트 핸들러
     mediaRecorder.onstop = async () => {
       const recordedBlob = new Blob(chunks, { type: `audio/${mimeType}` }); // 녹음 데이터 Blob 생성
-      const audioUrl = URL.createObjectURL(recordedBlob); // 녹음 데이터 URL 생성 (audio 태그에 사용)
+
+      const { audioBlob, audioURL } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
+      setAudioUrl(audioURL); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
 
       // 녹음 데이터 File 생성 (supabase에 업로드할 때 사용)
       const recordedFile = new File(
-        [recordedBlob],
-        `${formatDate(new Date())}.${mimeType}`,
+        [audioBlob],
+        `${formatDate(new Date())}.mp3`,
         {
-          type: `audio/${mimeType}`,
+          type: 'audio/mp3',
         },
       );
 
       // supabase에 녹음 데이터 저장
       await saveRecording(recordedFile, session.user.id!);
-      setAudioUrl(audioUrl); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
     };
 
     mediaRecorder.start();
@@ -81,12 +84,12 @@ export default function RecordButton({ session }: Props) {
       ) : (
         <Button onClick={startRecording}>녹음 시작</Button>
       )}
-      {/* {audioUrl && (
+      {audioUrl && (
         <>
           <p>녹음완료</p>
           <audio controls src={audioUrl} style={{ width: '100%' }} />
         </>
-      )} */}
+      )}
     </>
   );
 }
