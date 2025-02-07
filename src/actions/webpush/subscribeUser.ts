@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth';
 import { PushSubscription } from 'web-push';
 
 // 사용자의 푸시 알림 구독을 처리하는 함수
-export async function subscribeUser(sub: PushSubscription) {
+const subscribeUser = async (sub: PushSubscription) => {
   // sub: 브라우저에서 생성된 PushSubscription 객체
   const session = await getServerSession(authOptions);
   const user_id = session?.user?.id;
@@ -33,4 +33,6 @@ export async function subscribeUser(sub: PushSubscription) {
   }
 
   return JSON.parse(data[0].sub as string) as PushSubscription;
-}
+};
+
+export default subscribeUser;

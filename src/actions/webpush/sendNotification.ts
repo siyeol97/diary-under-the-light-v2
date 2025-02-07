@@ -11,10 +11,10 @@ webpush.setVapidDetails(
 );
 
 // 푸시 알림을 전송하는 함수
-export async function sendNotification(
+const sendNotification = async (
   subscription: PushSubscription,
   message: string,
-) {
+) => {
   // message:전송할 메시지 내용
   if (!subscription) {
     throw new Error('푸시 알림 전송 오류 : 구독 정보를 찾을 수 없습니다.');
@@ -40,4 +40,6 @@ export async function sendNotification(
     console.error('Error sending push notification:', error);
     return { success: false, error: 'Failed to send notification' };
   }
-}
+};
+
+export default sendNotification;

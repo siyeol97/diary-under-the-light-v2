@@ -1,12 +1,12 @@
 'use client';
 
-import { getDiaryAtDate } from '@/app/actions';
 import { Session } from 'next-auth';
 import { useEffect, useState } from 'react';
 import { DatePicker } from '../shared/DatePicker';
 import DiaryItem from './DiaryItem';
 import { Diary } from '@/types/diary';
 import { Accordion } from '../ui/accordion';
+import getDiaryAtDate from '@/actions/diary/getDiaryAtDate';
 
 interface Props {
   session: Session;

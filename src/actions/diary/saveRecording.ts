@@ -1,7 +1,13 @@
+'use server';
+
 import { createClient } from '@/utils/supabase/createServerClient';
 
 // 녹음 파일을 저장하고 diary 테이블에 저장하는 함수
-export async function saveRecording(recordedFile: File, userId: string) {
+const saveRecording = async (
+  recordedFile: File,
+  userId: string,
+  sttText: string,
+) => {
   const supabase = await createClient();
 
   const { data: recordingData, error: recordingError } = await supabase.storage
@@ -19,7 +25,13 @@ export async function saveRecording(recordedFile: File, userId: string) {
 
   const { data: diaryData, error: diaryError } = await supabase
     .from('test_diary')
-    .insert([{ recording_url: result.data.publicUrl, user_id: userId }])
+    .insert([
+      {
+        recording_url: result.data.publicUrl,
+        user_id: userId,
+        stt_text: sttText,
+      },
+    ])
     .select();
 
   if (diaryError) {
@@ -28,4 +40,6 @@ export async function saveRecording(recordedFile: File, userId: string) {
   }
 
   return diaryData;
-}
+};
+
+export default saveRecording;

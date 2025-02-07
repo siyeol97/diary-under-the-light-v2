@@ -2,16 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import urlBase64ToUint8Array from '@/utils/urlBase64ToUint8Array';
-import {
-  getSubscription,
-  sendNotification,
-  subscribeUser,
-  unsubscribeUser,
-} from '@/app/actions';
 import { PushSubscription } from 'web-push';
 import { Switch } from '../ui/switch';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import getSubscription from '@/actions/webpush/getSubscription';
+import subscribeUser from '@/actions/webpush/subscribeUser';
+import unsubscribeUser from '@/actions/webpush/unsubscribeUser';
+import sendNotification from '@/actions/webpush/sendNotification';
 
 /**
  * 웹 푸시 알림을 관리하는 컴포넌트

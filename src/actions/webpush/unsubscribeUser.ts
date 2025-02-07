@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/createServerClient';
 import { getServerSession } from 'next-auth';
 
 // 사용자의 푸시 알림 구독을 취소하는 함수
-export async function unsubscribeUser() {
+const unsubscribeUser = async () => {
   const session = await getServerSession(authOptions);
   const user_id = session?.user?.id;
   if (!user_id) {
@@ -27,4 +27,6 @@ export async function unsubscribeUser() {
   }
 
   return { success: true };
-}
+};
+
+export default unsubscribeUser;

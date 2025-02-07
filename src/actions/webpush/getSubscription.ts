@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/createServerClient';
 import { getServerSession } from 'next-auth';
 import { PushSubscription } from 'web-push';
 
-export async function getSubscription() {
+const getSubscription = async () => {
   const session = await getServerSession(authOptions);
   const user_id = session?.user?.id;
   if (!user_id) {
@@ -28,4 +28,6 @@ export async function getSubscription() {
   }
 
   return JSON.parse(data[0].sub as string) as PushSubscription;
-}
+};
+
+export default getSubscription;

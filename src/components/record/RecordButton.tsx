@@ -1,6 +1,7 @@
 'use client';
 
-import getSpeechToText, { saveRecording } from '@/app/actions';
+import getSpeechToText from '@/actions/diary/getSpeechToText';
+import saveRecording from '@/actions/diary/saveRecording';
 import { Button } from '@/components/ui/button';
 import useConvertToMP3 from '@/hooks/useConvertToMP3';
 import formatDate from '@/utils/formatDate';
