@@ -1,6 +1,7 @@
 'use client';
 
 import getSpeechToText from '@/actions/diary/getSpeechToText';
+import getVoiceDepress from '@/actions/diary/getVoiceDepress';
 import saveRecording from '@/actions/diary/saveRecording';
 import { Button } from '@/components/ui/button';
 import useConvertToMP3 from '@/hooks/useConvertToMP3';
@@ -49,7 +50,7 @@ export default function RecordButton({ session }: Props) {
       const { audioBlob, audioURL } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
       setAudioUrl(audioURL); // 녹음 URL 업데이트 (화면에 녹음 데이터 출력)
 
-      // 녹음 데이터 File 생성 (supabase에 업로드할 때 사용)
+      // 녹음 데이터 File 생성 (supabase에 업로드, 음성모델 서버에 요청할 때 사용)
       const recordedFile = new File(
         [audioBlob],
         `${formatDate(new Date())}.mp3`,
@@ -59,10 +60,17 @@ export default function RecordButton({ session }: Props) {
       );
 
       const { text } = await getSpeechToText(recordedFile); // STT API 호출
+      const voiceDepressResult = await getVoiceDepress(recordedFile); // 음성 감정 분석 API 호출
+
       setSttText(text); // STT 결과 업데이트
 
       // supabase에 녹음 데이터 저장
-      await saveRecording(recordedFile, session.user.id!, text);
+      await saveRecording(
+        recordedFile,
+        session.user.id!,
+        text,
+        voiceDepressResult,
+      );
     };
 
     mediaRecorder.start();

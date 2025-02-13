@@ -5,4 +5,9 @@ type Menu = {
   href: string;
 };
 
-export type { Menu };
+interface VoiceDepressResultType {
+  depress: string;
+  sigmoid_value: number;
+}
+
+export type { Menu, VoiceDepressResultType };

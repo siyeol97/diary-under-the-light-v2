@@ -52,6 +52,7 @@ export type Database = {
           recording_url: string | null
           stt_text: string | null
           user_id: string | null
+          voice_depress_result: Json | null
         }
         Insert: {
           created_at?: string
@@ -59,6 +60,7 @@ export type Database = {
           recording_url?: string | null
           stt_text?: string | null
           user_id?: string | null
+          voice_depress_result?: Json | null
         }
         Update: {
           created_at?: string
@@ -66,6 +68,7 @@ export type Database = {
           recording_url?: string | null
           stt_text?: string | null
           user_id?: string | null
+          voice_depress_result?: Json | null
         }
         Relationships: []
       }
