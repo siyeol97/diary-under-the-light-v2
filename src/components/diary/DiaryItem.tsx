@@ -37,20 +37,28 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
       <AccordionTrigger>{formattedDate}</AccordionTrigger>
       <AccordionContent>
         <audio src={recording_url!} style={{ width: '100%' }} controls />
-        {stt_text && (
-          <div className='flex flex-col gap-2 mt-2'>
-            <h3>--STT 결과--</h3>
-            <p>{stt_text}</p>
-            <h3>--음성 우울감 분석 결과--</h3>
-            <span>
-              {typeof depress === 'string' ? depress : '결과 없음'}
-            </span>{' '}
-            <span>
-              확률 :{' '}
-              {typeof sigmoidValue === 'number' ? sigmoidValue : '결과 없음'}
-            </span>
-          </div>
-        )}
+        <div className='flex flex-col gap-2 mt-2'>
+          {stt_text && (
+            <>
+              <h3>--STT 결과--</h3>
+              <p>{stt_text}</p>
+            </>
+          )}
+          {voice_depress_result && (
+            <>
+              <h3>--음성 우울감 분석 결과--</h3>
+              <span>
+                {typeof depress === 'string' ? depress : '결과 없음'}
+              </span>{' '}
+              <span>
+                우울감 수치 :{' '}
+                {typeof sigmoidValue === 'number'
+                  ? (sigmoidValue * 100).toFixed(2)
+                  : '결과 없음'}
+              </span>
+            </>
+          )}
+        </div>
       </AccordionContent>
     </AccordionItem>
   );

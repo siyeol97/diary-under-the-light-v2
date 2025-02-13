@@ -20,7 +20,6 @@ const useConvertToMP3 = () => {
 
   const transcode = async (blob: Blob, mimeType: string) => {
     let audioBlob = null;
-    let audioURL = null;
 
     const ffmpeg = ffmpegRef.current;
     await ffmpeg.writeFile(`input.${mimeType}`, await fetchFile(blob));
@@ -29,9 +28,8 @@ const useConvertToMP3 = () => {
     const data = (await ffmpeg.readFile('output.mp3')) as any;
 
     audioBlob = new Blob([data.buffer], { type: 'audio/mp3' });
-    audioURL = URL.createObjectURL(audioBlob);
 
-    return { audioBlob, audioURL };
+    return { audioBlob };
   };
 
   return { load, transcode };
