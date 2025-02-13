@@ -7,6 +7,7 @@ const saveRecording = async (
   recordedFile: File,
   userId: string,
   sttText: string,
+  voiceDepressResult: string,
 ) => {
   const supabase = await createClient();
 
@@ -30,6 +31,7 @@ const saveRecording = async (
         recording_url: result.data.publicUrl,
         user_id: userId,
         stt_text: sttText,
+        voice_depress_result: voiceDepressResult,
       },
     ])
     .select();
