@@ -2,13 +2,16 @@
 
 const getVoiceDepress = async (audioFile: File) => {
   try {
-    const result = await fetch(`${process.env.VOICE_DEPRESS_API_URL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/octet-stream',
+    const result = await fetch(
+      `${process.env.AI_MODEL_API_URL}/voice-depress`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        body: audioFile,
       },
-      body: audioFile,
-    });
+    );
 
     return result.json();
   } catch (error) {
