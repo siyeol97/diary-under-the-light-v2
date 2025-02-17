@@ -28,7 +28,7 @@ export default function DiaryList({ session }: Props) {
 
   useEffect(() => {
     const updateDiaryList = async () => {
-      const diaryList = await getDiaryAtDate(
+      const diaryList: Diary[] = await getDiaryAtDate(
         session.user.id!,
         getDate(date).toISOString().slice(0, 10),
       );
