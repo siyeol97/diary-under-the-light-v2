@@ -32,7 +32,7 @@ export default function DiaryList({ session }: Props) {
         session.user.id!,
         getDate(date).toISOString().slice(0, 10),
       );
-      setDiaryList(diaryList);
+      setDiaryList(diaryList as Diary[]);
     };
     updateDiaryList();
   }, [date]);

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import useConvertToMP3 from './useConvertToMP3';
 import formatDate from '@/utils/formatDate';
 import getSpeechToText from '@/actions/diary/getSpeechToText';
-import getVoiceDepress from '@/actions/diary/getVoiceDepress';
+import getVoiceModelResult from '@/actions/diary/getVoiceModelResult';
 import saveRecording from '@/actions/diary/saveRecording';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/navigation';
@@ -55,17 +55,14 @@ const useRecord = (session: Session) => {
       setProcessingText('음성을 텍스트로 변환 중...');
       const { text } = await getSpeechToText(recordedFile); // STT API 호출
 
-      setProcessingText('음성으로 우울감 분석 중...');
-      const voiceDepressResult = await getVoiceDepress(recordedFile); // 음성 우울감 분석 API 호출
+      // TODO: STT 변환 후 텍스트를 화면에 표시하고, '분석' 버튼을 누를 시 음성, 텍스트 모델 서버에 요청
+
+      setProcessingText('음성으로 우울감, 감정 분석 중...');
+      const voiceResult = await getVoiceModelResult(recordedFile); // 음성 우울감 분석 API 호출
 
       setProcessingText('데이터 저장 중...');
       // supabase에 녹음파일, 유저 id, stt text, 음성 우울감 분석 결과 저장
-      await saveRecording(
-        recordedFile,
-        session.user.id!,
-        text,
-        voiceDepressResult,
-      );
+      await saveRecording(recordedFile, session.user.id!, text, voiceResult);
 
       setProcessingText(null); // 프로세싱 텍스트 초기화
       // '/diary' 페이지로 이동, default로 오늘 날짜의 다이어리를 보여줌

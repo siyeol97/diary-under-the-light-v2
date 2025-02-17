@@ -1,6 +1,6 @@
 'use client';
 
-import { Diary } from '@/types/diary';
+import { Diary, EmotionProb } from '@/types/diary';
 import formatDateDiff from '@/utils/formatDateDiff';
 import {
   AccordionContent,
@@ -11,8 +11,10 @@ import { useEffect, useState } from 'react';
 import { Json } from '../../../database.types';
 
 export default function DiaryItem({ diary }: { diary: Diary }) {
-  const [depress, setDepress] = useState<Json | string>('');
-  const [sigmoidValue, setSigmoidValue] = useState<Json | number>(0);
+  const [depression, setDepression] = useState<Json>('결과 없음');
+  const [sigmoidValue, setSigmoidValue] = useState<Json>(0);
+  const [emotion, setEmotion] = useState<Json>('결과 없음');
+  const [emotionProb, setEmotionProb] = useState<EmotionProb>({});
   const { id, created_at, recording_url, stt_text, voice_depress_result } =
     diary;
 
@@ -24,10 +26,19 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
       typeof voice_depress_result === 'object' &&
       !Array.isArray(voice_depress_result)
     ) {
-      const { depress, sigmoid_value } = voice_depress_result;
-      if (depress && sigmoid_value !== undefined) {
-        setDepress(depress);
+      const { depression, sigmoid_value, emotion, emotion_prob } =
+        voice_depress_result;
+
+      // 음성 우울감 분석 결과
+      if (depression && sigmoid_value) {
+        setDepression(depression);
         setSigmoidValue(sigmoid_value);
+      }
+
+      // 음성 감정 분석 결과
+      if (emotion && emotion_prob) {
+        setEmotion(emotion);
+        setEmotionProb(emotion_prob);
       }
     }
   }, [voice_depress_result]);
@@ -48,14 +59,26 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
             <>
               <h3>--음성 우울감 분석 결과--</h3>
               <span>
-                {typeof depress === 'string' ? depress : '결과 없음'}
-              </span>{' '}
+                {typeof depression === 'string' ? depression : '결과 없음'}
+              </span>
               <span>
                 우울감 수치 :{' '}
                 {typeof sigmoidValue === 'number'
                   ? (sigmoidValue * 100).toFixed(2)
                   : '결과 없음'}
               </span>
+              <h3>--음성 감정 분석 결과--</h3>
+              <span>
+                대표 감정: {typeof emotion === 'string' ? emotion : '결과 없음'}
+              </span>
+              {emotionProb &&
+                Object.keys(emotionProb || {}).map((emotion) => {
+                  return (
+                    <span key={emotion}>
+                      {emotion}: {(emotionProb[emotion] * 100).toFixed(2)}%
+                    </span>
+                  );
+                })}
             </>
           )}
         </div>
