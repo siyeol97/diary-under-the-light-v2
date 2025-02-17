@@ -28,11 +28,11 @@ export default function DiaryList({ session }: Props) {
 
   useEffect(() => {
     const updateDiaryList = async () => {
-      const diaryList: Diary[] = await getDiaryAtDate(
+      const diaryList = await getDiaryAtDate(
         session.user.id!,
         getDate(date).toISOString().slice(0, 10),
       );
-      setDiaryList(diaryList);
+      setDiaryList(diaryList as Diary[]);
     };
     updateDiaryList();
   }, [date]);
