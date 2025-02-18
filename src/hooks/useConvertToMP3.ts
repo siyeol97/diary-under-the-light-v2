@@ -19,17 +19,16 @@ const useConvertToMP3 = () => {
   };
 
   const transcode = async (blob: Blob, mimeType: string) => {
-    let audioBlob = null;
-
     const ffmpeg = ffmpegRef.current;
     await ffmpeg.writeFile(`input.${mimeType}`, await fetchFile(blob));
     await ffmpeg.exec(['-i', `input.${mimeType}`, 'output.mp3']);
     // eslint-disable-next-line
     const data = (await ffmpeg.readFile('output.mp3')) as any;
 
-    audioBlob = new Blob([data.buffer], { type: 'audio/mp3' });
+    const audioBlob = new Blob([data.buffer], { type: 'audio/mp3' });
+    const audioURL = URL.createObjectURL(audioBlob);
 
-    return { audioBlob };
+    return { audioBlob, audioURL };
   };
 
   return { load, transcode };

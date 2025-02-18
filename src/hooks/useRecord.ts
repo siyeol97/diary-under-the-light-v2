@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import useConvertToMP3 from './useConvertToMP3';
 import formatDate from '@/utils/formatDate';
 import getSpeechToText from '@/actions/diary/getSpeechToText';
@@ -14,6 +14,9 @@ const useRecord = (session: Session) => {
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
   const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
   const { load, transcode } = useConvertToMP3();
+  const [audioURL, setAudioURL] = useState<string>(''); // 녹음된 오디오 URL
+  const [sttText, setSttText] = useState<string>(''); // 음성을 텍스트로 변환한 텍스트
+  const [recordedFile, setRecordedFile] = useState<File | null>(null); // 녹음 데이터 File
   const [processingText, setProcessingText] = useState<string | null>(null); // 프로세싱 과정을 보여주는 텍스트
 
   useEffect(() => {
@@ -40,33 +43,30 @@ const useRecord = (session: Session) => {
 
     // 녹음 중지 이벤트 핸들러
     mediaRecorder.onstop = async () => {
+      setProcessingText('음성을 텍스트로 변환 중...');
+
       const recordedBlob = new Blob(chunks, { type: `audio/${mimeType}` }); // 녹음 데이터 Blob 생성
-      const { audioBlob } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
+      const { audioBlob, audioURL } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
+
+      setAudioURL(audioURL); // 녹음된 오디오 URL 업데이트
 
       // 녹음 데이터 File 생성 (supabase에 업로드, 음성, 텍스트 모델 서버에 요청할 때 사용)
-      const recordedFile = new File(
-        [audioBlob],
-        `${formatDate(new Date())}.mp3`,
-        {
-          type: 'audio/mp3',
-        },
-      );
+      const recorded = new File([audioBlob], `${formatDate(new Date())}.mp3`, {
+        type: 'audio/mp3',
+      });
 
-      setProcessingText('음성을 텍스트로 변환 중...');
-      const { text } = await getSpeechToText(recordedFile); // STT API 호출
+      setRecordedFile(recorded); // 녹음 데이터 File 업데이트
 
-      // TODO: STT 변환 후 텍스트를 화면에 표시하고, '분석' 버튼을 누를 시 음성, 텍스트 모델 서버에 요청
+      const { text } = await getSpeechToText(recordedFile!); // STT API 호출
 
-      setProcessingText('음성으로 우울감, 감정 분석 중...');
-      const voiceResult = await getVoiceModelResult(recordedFile); // 음성 우울감 분석 API 호출
+      setProcessingText(null);
 
-      setProcessingText('데이터 저장 중...');
-      // supabase에 녹음파일, 유저 id, stt text, 음성 우울감 분석 결과 저장
-      await saveRecording(recordedFile, session.user.id!, text, voiceResult);
+      if (!text) {
+        setSttText('음성 감지가 원활하지 않습니다.');
+        return;
+      }
 
-      setProcessingText(null); // 프로세싱 텍스트 초기화
-      // '/diary' 페이지로 이동, default로 오늘 날짜의 다이어리를 보여줌
-      router.replace('/diary');
+      setSttText(text); // STT 결과 업데이트
     };
 
     // 녹음 시작
@@ -85,11 +85,33 @@ const useRecord = (session: Session) => {
     }
   };
 
+  // 일기 텍스트 업데이트
+  const updateSttText = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setSttText(e.target.value);
+  };
+
+  // 음성, 텍스트 우울감, 감정 분석 함수
+  const analyzeEmotions = async () => {
+    setProcessingText('음성으로 우울감, 감정 분석 중...');
+    const voiceResult = await getVoiceModelResult(recordedFile!);
+
+    setProcessingText('데이터 저장 중...');
+    await saveRecording(recordedFile!, session.user.id!, sttText, voiceResult);
+
+    // TODO: 텍스트 우울감, 감정 분석
+
+    router.replace('/diary');
+  };
+
   return {
     isRecording,
     startRecording,
     stopRecording,
     processingText,
+    sttText,
+    audioURL,
+    updateSttText,
+    analyzeEmotions,
   };
 };
 
