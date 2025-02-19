@@ -1,6 +1,6 @@
 'use client';
 
-import { Diary, EmotionProb } from '@/types/diary';
+import { Diary, TextEmotionProb, VoiceEmotionProb } from '@/types/diary';
 import formatDateDiff from '@/utils/formatDateDiff';
 import {
   AccordionContent,
@@ -11,24 +11,25 @@ import { useEffect, useState } from 'react';
 import { Json } from '../../../database.types';
 
 export default function DiaryItem({ diary }: { diary: Diary }) {
+  // 음성 우울, 감정 분석 결과
   const [voiceDepression, setVoiceDepression] = useState<Json>('결과 없음');
   const [sigmoidValue, setSigmoidValue] = useState<Json>(0);
-  const [emotion, setEmotion] = useState<Json>('결과 없음');
-  const [emotionProb, setEmotionProb] = useState<EmotionProb>({});
-  const [textEmotion, setTextEmotion] = useState<Json>('결과 없음');
+  const [voiceEmotion, setVoiceEmotion] = useState<Json>('결과 없음');
+  const [voiceEmotionProb, setVoiceEmotionProb] = useState<VoiceEmotionProb>(
+    {},
+  );
+  // 텍스트 우울, 감정 분석 결과
+  const [textEmotionProb, setTextEmotionProb] = useState<TextEmotionProb>({});
   const [textDepressionValue, setTextDepressionValue] = useState<Json>(0);
-  const [textAdvice, setTextAdvice] = useState<Json>('');
+  const [textAdvice, setTextAdvice] = useState<string>('');
+
   const { id, created_at, recording_url, stt_text, voice_result, text_result } =
     diary;
 
   const formattedDate = formatDateDiff(created_at);
 
   useEffect(() => {
-    if (
-      voice_result &&
-      typeof voice_result === 'object' &&
-      !Array.isArray(voice_result)
-    ) {
+    if (voice_result) {
       const { depression, sigmoid_value, emotion, emotion_prob } = voice_result;
 
       // 음성 우울감 분석 결과
@@ -39,23 +40,18 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
 
       // 음성 감정 분석 결과
       if (emotion && emotion_prob) {
-        setEmotion(emotion);
-        setEmotionProb(emotion_prob);
+        setVoiceEmotion(emotion);
+        setVoiceEmotionProb(emotion_prob);
       }
     }
 
-    if (
-      text_result &&
-      typeof text_result === 'object' &&
-      !Array.isArray(text_result)
-    ) {
+    // 텍스트 우울, 감정 분석 결과
+    if (text_result) {
       const { emotion, depression_value, advice } = text_result;
 
-      setTextEmotion(emotion);
+      setTextEmotionProb(emotion);
       setTextDepressionValue(depression_value);
       setTextAdvice(advice);
-
-      console.log(textEmotion, textDepressionValue, textAdvice);
     }
   }, [voice_result, text_result]);
 
@@ -64,7 +60,7 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
       <AccordionTrigger>{formattedDate}</AccordionTrigger>
       <AccordionContent>
         <audio src={recording_url!} style={{ width: '100%' }} controls />
-        <div className='flex flex-col gap-2 mt-2'>
+        <div className='flex flex-col h-full gap-2 mt-6 mb-6 py-2'>
           {stt_text && (
             <>
               <h3>--STT 결과--</h3>
@@ -87,17 +83,40 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
               </span>
               <h3>--음성 감정 분석 결과--</h3>
               <span>
-                대표 감정: {typeof emotion === 'string' ? emotion : '결과 없음'}
+                대표 감정:{' '}
+                {typeof voiceEmotion === 'string' ? voiceEmotion : '결과 없음'}
               </span>
-              {emotionProb &&
-                Object.keys(emotionProb || {}).map((emotion) => {
+              {voiceEmotionProb &&
+                Object.keys(voiceEmotionProb || {}).map((emotion) => {
                   return (
                     <span key={emotion}>
-                      {emotion}: {(emotionProb[emotion] * 100).toFixed(2)}%
+                      {emotion}: {(voiceEmotionProb[emotion] * 100).toFixed(2)}%
                     </span>
                   );
                 })}
             </>
+          )}
+          <h3>--텍스트 감정 분석 결과--</h3>
+          {text_result ? (
+            <>
+              <p>
+                우울감 수치:{' '}
+                {typeof textDepressionValue === 'number'
+                  ? textDepressionValue
+                  : '결과 없음'}
+              </p>
+              {textEmotionProb &&
+                Object.keys(textEmotionProb).map((emotion) => {
+                  return (
+                    <span key={emotion}>
+                      {emotion}: {textEmotionProb[emotion]}
+                    </span>
+                  );
+                })}
+              <p>{textAdvice}</p>
+            </>
+          ) : (
+            <p>GEMINI 연결이 원활하지 않습니다.</p>
           )}
         </div>
       </AccordionContent>

@@ -37,11 +37,15 @@ interface VoiceResult {
   depression?: string;
   sigmoid_value?: number;
   emotion?: string;
-  emotion_prob?: EmotionProb;
+  emotion_prob?: VoiceEmotionProb;
 }
 
-interface EmotionProb {
+interface VoiceEmotionProb {
   [key: string]: number;
 }
 
-export type { Diary, VoiceResult, EmotionProb };
+interface TextEmotionProb {
+  [key: string]: number;
+}
+
+export type { Diary, VoiceResult, VoiceEmotionProb, TextEmotionProb };

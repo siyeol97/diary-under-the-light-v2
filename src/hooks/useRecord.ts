@@ -58,7 +58,7 @@ const useRecord = (session: Session) => {
 
       setRecordedFile(recorded); // 녹음 데이터 File 업데이트
 
-      const { text } = await getSpeechToText(recordedFile!); // STT API 호출
+      const { text } = await getSpeechToText(recorded); // STT API 호출
 
       setProcessingText(null);
 
@@ -97,18 +97,26 @@ const useRecord = (session: Session) => {
     const voiceResult = await getVoiceModelResult(recordedFile!);
 
     setProcessingText('텍스트로 우울감, 감정 분석 중...');
-    const textResult = await getGeminiResponse(sttText);
+    const result = await getGeminiResponse(sttText);
+    let textResult = '';
 
-    setProcessingText('데이터 저장 중...');
-    await saveRecording(
-      recordedFile!,
-      session.user.id!,
-      sttText,
-      voiceResult,
-      textResult,
-    );
+    try {
+      setProcessingText('데이터 저장 중...');
+      textResult = JSON.parse(result);
+    } catch (e) {
+      console.log(e);
+      textResult = '';
+    } finally {
+      await saveRecording(
+        recordedFile!,
+        session.user.id!,
+        sttText,
+        voiceResult,
+        textResult,
+      );
 
-    router.replace('/diary');
+      router.replace('/diary');
+    }
   };
 
   return {
