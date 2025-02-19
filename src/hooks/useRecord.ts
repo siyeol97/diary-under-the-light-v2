@@ -6,6 +6,7 @@ import getVoiceModelResult from '@/actions/diary/getVoiceModelResult';
 import saveRecording from '@/actions/diary/saveRecording';
 import { Session } from 'next-auth';
 import { useRouter } from 'next/navigation';
+import getGeminiResponse from '@/actions/diary/getGeminiResponse';
 
 const useRecord = (session: Session) => {
   const router = useRouter();
@@ -95,10 +96,17 @@ const useRecord = (session: Session) => {
     setProcessingText('음성으로 우울감, 감정 분석 중...');
     const voiceResult = await getVoiceModelResult(recordedFile!);
 
-    setProcessingText('데이터 저장 중...');
-    await saveRecording(recordedFile!, session.user.id!, sttText, voiceResult);
+    setProcessingText('텍스트로 우울감, 감정 분석 중...');
+    const textResult = await getGeminiResponse(sttText);
 
-    // TODO: 텍스트 우울감, 감정 분석
+    setProcessingText('데이터 저장 중...');
+    await saveRecording(
+      recordedFile!,
+      session.user.id!,
+      sttText,
+      voiceResult,
+      textResult,
+    );
 
     router.replace('/diary');
   };
