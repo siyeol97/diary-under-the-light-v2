@@ -16,7 +16,7 @@ export default function MainPageContainer({ session }: Props) {
   const { data: diaryList } = useDiary(session, date);
 
   return (
-    <section className='flex flex-col gap-10 px-5 py-10'>
+    <section className='flex flex-col gap-10 px-5 py-10 size-full'>
       <Calendar
         mode='single'
         selected={date}

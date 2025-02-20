@@ -12,7 +12,7 @@ const useDiary = (session: Session, date: Date | undefined) => {
         getKoreaDate(date!).toISOString().slice(0, 10),
       ),
     enabled: !!date,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 };
 
