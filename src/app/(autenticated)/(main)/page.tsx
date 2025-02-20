@@ -1,6 +1,4 @@
 import MainPageContainer from '@/components/main/MainPageContainer';
-import AudioRecord from '@/components/record/AudioRecord';
-import InstallPrompt from '@/components/shared/InstallPrompt';
 import { authOptions } from '@/utils/authOptions';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
@@ -20,8 +18,6 @@ export default async function Page() {
   return (
     <main className='flex flex-col gap-4 justify-start items-center size-full'>
       <MainPageContainer session={session} />
-      <InstallPrompt />
-      <AudioRecord session={session} />
     </main>
   );
 }
