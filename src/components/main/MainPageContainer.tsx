@@ -5,7 +5,6 @@ import { Session } from 'next-auth';
 import { useState } from 'react';
 import DiaryItem from '../diary/DiaryItem';
 import AudioRecord from '../record/AudioRecord';
-import { Accordion } from '../ui/accordion';
 import { Calendar } from '../ui/calendar';
 
 interface Props {
@@ -31,12 +30,7 @@ export default function MainPageContainer({ session }: Props) {
           <AudioRecord session={session} />
         )
       ) : (
-        <Accordion type='single' collapsible className='w-full'>
-          {diaryList &&
-            diaryList.map((diary) => {
-              return <DiaryItem key={diary.id} diary={diary} />;
-            })}
-        </Accordion>
+        <DiaryItem key={diaryList[0].id} diary={diaryList[0]} />
       )}
     </section>
   );
