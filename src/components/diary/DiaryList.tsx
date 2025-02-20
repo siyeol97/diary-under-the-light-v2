@@ -42,19 +42,6 @@ export default function DiaryList({ session }: Props) {
   return (
     <section className='flex flex-col gap-10 px-5 py-10 '>
       <DatePicker date={date} setDate={setDate} className='w-full' />
-      {/* <p>녹음파일 전체 리스트</p>
-      {diaries.map((diary) => {
-        return (
-          <div key={diary.id}>
-            <p>{diary.created_at}</p>
-            <audio
-              src={diary.recording_url!}
-              style={{ width: '100%' }}
-              controls
-            />
-          </div>
-        );
-      })} */}
       <Accordion type='single' collapsible className='w-full'>
         {diaryList &&
           diaryList.map((diary) => {

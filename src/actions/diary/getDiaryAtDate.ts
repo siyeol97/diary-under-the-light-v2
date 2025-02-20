@@ -1,5 +1,6 @@
 'use server';
 
+import { Diary } from '@/types/diary';
 import { createClient } from '@/utils/supabase/createServerClient';
 
 // diary 테이블에서 오늘 날짜의 데이터를 가져오는 함수
@@ -17,7 +18,7 @@ const getDiaryAtDate = async (userId: string, createdAt: string) => {
     throw error;
   }
 
-  return data;
+  return data as Diary[];
 };
 
 export default getDiaryAtDate;

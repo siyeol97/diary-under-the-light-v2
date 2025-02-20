@@ -1,3 +1,4 @@
+import MainPageContainer from '@/components/main/MainPageContainer';
 import AudioRecord from '@/components/record/AudioRecord';
 import InstallPrompt from '@/components/shared/InstallPrompt';
 import { authOptions } from '@/utils/authOptions';
@@ -17,9 +18,10 @@ export default async function Page() {
   }
 
   return (
-    <div className='flex flex-col gap-4 justify-center items-center size-full'>
+    <main className='flex flex-col gap-4 justify-start items-center size-full'>
+      <MainPageContainer session={session} />
       <InstallPrompt />
       <AudioRecord session={session} />
-    </div>
+    </main>
   );
 }
