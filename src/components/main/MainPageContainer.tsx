@@ -4,7 +4,7 @@ import useDiary from '@/hooks/useDiary';
 import { Session } from 'next-auth';
 import { useState } from 'react';
 import DiaryItem from '../diary/DiaryItem';
-import AudioRecord from '../record/AudioRecord';
+import RecordButton from '../record/RecordButton';
 import { Calendar } from '../ui/calendar';
 
 interface Props {
@@ -27,7 +27,7 @@ export default function MainPageContainer({ session }: Props) {
         isLoading ? (
           <p>로딩 중...</p>
         ) : (
-          <AudioRecord session={session} />
+          <RecordButton session={session} date={date} />
         )
       ) : (
         <DiaryItem key={diaryList[0].id} diary={diaryList[0]} />

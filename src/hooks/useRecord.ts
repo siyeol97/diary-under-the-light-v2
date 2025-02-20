@@ -5,11 +5,9 @@ import getSpeechToText from '@/actions/diary/getSpeechToText';
 import getVoiceModelResult from '@/actions/diary/getVoiceModelResult';
 import saveRecording from '@/actions/diary/saveRecording';
 import { Session } from 'next-auth';
-import { useRouter } from 'next/navigation';
 import getGeminiResponse from '@/actions/diary/getGeminiResponse';
 
 const useRecord = (session: Session) => {
-  const router = useRouter();
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태 관리
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
@@ -114,8 +112,7 @@ const useRecord = (session: Session) => {
         voiceResult,
         textResult,
       );
-
-      router.replace('/diary');
+      setProcessingText(null);
     }
   };
 
