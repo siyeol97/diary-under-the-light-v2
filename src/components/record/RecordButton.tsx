@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import useRecord from '@/hooks/useRecord';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Session } from 'next-auth';
 
 interface Props {
@@ -11,7 +10,6 @@ interface Props {
 }
 
 export default function RecordButton({ session, date }: Props) {
-  const queryClient = useQueryClient();
   const {
     isRecording,
     startRecording,
@@ -20,16 +18,8 @@ export default function RecordButton({ session, date }: Props) {
     sttText,
     audioURL,
     updateSttText,
-    analyzeEmotions,
-  } = useRecord(session);
-
-  const { mutateAsync } = useMutation({
-    mutationFn: analyzeEmotions,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ['diary', session.user.id, date],
-      }),
-  });
+    analyze,
+  } = useRecord(session, date);
 
   return (
     <section className='flex flex-col items-center'>
@@ -48,7 +38,7 @@ export default function RecordButton({ session, date }: Props) {
             value={sttText}
             onChange={(e) => updateSttText(e)}
           />
-          <Button onClick={() => mutateAsync()}>분석 시작</Button>
+          <Button onClick={() => analyze()}>분석 시작</Button>
         </div>
       ) : (
         <Button onClick={startRecording}>녹음 시작</Button>

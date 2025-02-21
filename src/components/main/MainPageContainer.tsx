@@ -30,7 +30,7 @@ export default function MainPageContainer({ session }: Props) {
           <RecordButton session={session} date={date} />
         )
       ) : (
-        <DiaryItem key={diaryList[0].id} diary={diaryList[0]} />
+        <DiaryItem session={session} date={date} diary={diaryList[0]} />
       )}
     </section>
   );

@@ -1,11 +1,22 @@
 'use client';
 
+import deleteRecording from '@/actions/diary/deleteRecording';
 import { Diary, TextEmotionProb, VoiceEmotionProb } from '@/types/diary';
 import formatDateDiff from '@/utils/formatDateDiff';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Session } from 'next-auth';
 import { useEffect, useState } from 'react';
 import { Json } from '../../../database.types';
+import { Button } from '../ui/button';
 
-export default function DiaryItem({ diary }: { diary: Diary }) {
+interface Props {
+  session: Session;
+  date: Date | undefined;
+  diary: Diary;
+}
+
+export default function DiaryItem({ session, date, diary }: Props) {
+  const queryClient = useQueryClient();
   // 음성 우울, 감정 분석 결과
   const [voiceDepression, setVoiceDepression] = useState<Json>('결과 없음');
   const [sigmoidValue, setSigmoidValue] = useState<Json>(0);
@@ -18,10 +29,18 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
   const [textDepressionValue, setTextDepressionValue] = useState<Json>(0);
   const [textAdvice, setTextAdvice] = useState<string>('');
 
-  const { created_at, recording_url, stt_text, voice_result, text_result } =
+  const { id, created_at, recording_url, stt_text, voice_result, text_result } =
     diary;
 
   const formattedDate = formatDateDiff(created_at);
+
+  const { mutateAsync: deleteDiary } = useMutation({
+    mutationFn: () => deleteRecording(id, recording_url),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ['diary', session.user.id, date],
+      }),
+  });
 
   useEffect(() => {
     if (voice_result) {
@@ -52,6 +71,7 @@ export default function DiaryItem({ diary }: { diary: Diary }) {
 
   return (
     <section>
+      <Button onClick={() => deleteDiary()}>삭제</Button>
       <h3>{formattedDate}</h3>
       <audio src={recording_url!} style={{ width: '100%' }} controls />
       <div className='flex flex-col h-full gap-2 mt-6 mb-6 py-2'>
