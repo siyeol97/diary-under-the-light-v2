@@ -12,9 +12,10 @@ const saveRecording = async (
 ) => {
   const supabase = await createClient();
 
-  const { data: recordingData, error: recordingError } = await supabase.storage
-    .from('recordings')
-    .upload(`${userId}/${recordedFile.name}`, recordedFile);
+  const { data: recordingStorageData, error: recordingError } =
+    await supabase.storage
+      .from('recordings')
+      .upload(`${userId}/${recordedFile.name}`, recordedFile);
 
   if (recordingError) {
     console.error(recordingError);
@@ -23,7 +24,7 @@ const saveRecording = async (
 
   const result = supabase.storage
     .from('recordings')
-    .getPublicUrl(recordingData.path);
+    .getPublicUrl(recordingStorageData.path);
 
   const { data: diaryData, error: diaryError } = await supabase
     .from('test_diary')

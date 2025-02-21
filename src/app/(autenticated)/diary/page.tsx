@@ -1,4 +1,3 @@
-import DiaryList from '@/components/diary/DiaryList';
 import { authOptions } from '@/utils/authOptions';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -15,5 +14,5 @@ export default async function page() {
     redirect('/auth/signin');
   }
 
-  return <DiaryList session={session} />;
+  return <section>일기 상세 페이지</section>;
 }
