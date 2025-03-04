@@ -29,6 +29,7 @@ export default function MainPageContainer({ session, transcode }: Props) {
         selected={date}
         onSelect={setDate}
         className='rounded-md border'
+        disabled={(date) => date > new Date()}
       />
       {!diaryList || diaryList.length === 0 ? (
         isLoading ? (
