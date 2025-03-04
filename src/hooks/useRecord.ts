@@ -24,6 +24,7 @@ const useRecord = (
   const countDown = useRef<NodeJS.Timeout | null>(null); // 카운트 다운 Ref
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태 관리
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
+  const [isMobile, setIsMobile] = useState(false); // 모바일 여부 관리
   const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
   const [audioURL, setAudioURL] = useState<string>(''); // 녹음된 오디오 URL
   const [sttText, setSttText] = useState<string>(''); // 음성을 텍스트로 변환한 텍스트
@@ -36,6 +37,7 @@ const useRecord = (
     setIsIOS(
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window),
     );
+    setIsMobile(/Android|iPhone|iPad|/i.test(navigator.userAgent));
     setIsSafari(navigator.userAgent.indexOf('Safari') !== -1);
   }, []);
 
@@ -73,7 +75,7 @@ const useRecord = (
       });
 
       setRecordedFile(recorded); // 녹음 데이터 File 업데이트
-      setProcessingText('음성을 텍스트로 변환 중...');
+      setProcessingText(`음성을 텍스트로 변환 중...`);
 
       const { text } = await getSpeechToText(recorded); // STT API 호출
 
@@ -91,7 +93,7 @@ const useRecord = (
     mediaRecorder.start();
     mediaRecorderRef.current = mediaRecorder; // MediaRecorder를 Ref에 저장
     setIsRecording(true); // 녹음 상태 업데이트
-    setRecordRemainingTime(50); // 녹음 남은 시간 초기화
+    setRecordRemainingTime(isMobile ? 30 : 50); // 녹음 남은 시간 초기화
 
     timer.current = setTimeout(() => {
       stopRecording();
