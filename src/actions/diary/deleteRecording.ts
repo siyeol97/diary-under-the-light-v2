@@ -7,8 +7,6 @@ const deleteRecording = async (id: number, url: string | null) => {
   const filePath = url?.replace(baseUrl, '');
   const supabase = await createClient();
 
-  console.log(filePath);
-
   if (!filePath) {
     throw new Error('파일 경로가 존재하지 않습니다.');
   }

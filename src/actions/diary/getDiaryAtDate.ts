@@ -3,7 +3,7 @@
 import { Diary } from '@/types/diary';
 import { createClient } from '@/utils/supabase/createServerClient';
 
-// diary 테이블에서 오늘 날짜의 데이터를 가져오는 함수
+// diary 테이블에서 날짜의 데이터를 가져오는 함수
 const getDiaryAtDate = async (userId: string, createdAt: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
