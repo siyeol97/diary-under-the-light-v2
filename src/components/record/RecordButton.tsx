@@ -27,14 +27,18 @@ export default function RecordButton({ session, date, transcode }: Props) {
     audioURL,
     updateSttText,
     analyze,
+    recordRemainingTime,
   } = useRecord(session, date, transcode);
 
   return (
     <section className='flex flex-col items-center'>
       {isRecording ? (
-        <Button variant='destructive' onClick={stopRecording}>
-          녹음 중
-        </Button>
+        <>
+          <p>{recordRemainingTime}</p>
+          <Button variant='destructive' onClick={stopRecording}>
+            녹음 중
+          </Button>
+        </>
       ) : processingText ? (
         <p>{processingText}</p>
       ) : audioURL ? (
