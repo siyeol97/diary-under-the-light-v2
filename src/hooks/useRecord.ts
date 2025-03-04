@@ -95,9 +95,12 @@ const useRecord = (
     setIsRecording(true); // 녹음 상태 업데이트
     setRecordRemainingTime(isMobile ? 30 : 50); // 녹음 남은 시간 초기화
 
-    timer.current = setTimeout(() => {
-      stopRecording();
-    }, 50 * 1000);
+    timer.current = setTimeout(
+      () => {
+        stopRecording();
+      },
+      isMobile ? 30 * 1000 : 50 * 1000,
+    );
 
     countDown.current = setInterval(() => {
       setRecordRemainingTime((prev) => {
