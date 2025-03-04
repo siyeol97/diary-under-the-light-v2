@@ -9,9 +9,16 @@ import { Calendar } from '../ui/calendar';
 
 interface Props {
   session: Session;
+  transcode: (
+    blob: Blob,
+    mimeType: string,
+  ) => Promise<{
+    audioBlob: Blob;
+    audioURL: string;
+  }>;
 }
 
-export default function MainPageContainer({ session }: Props) {
+export default function MainPageContainer({ session, transcode }: Props) {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { data: diaryList, isLoading } = useDiary(session, date);
 
@@ -27,7 +34,7 @@ export default function MainPageContainer({ session }: Props) {
         isLoading ? (
           <p>로딩 중...</p>
         ) : (
-          <RecordButton session={session} date={date} />
+          <RecordButton session={session} date={date} transcode={transcode} />
         )
       ) : (
         <DiaryItem session={session} date={date} diary={diaryList[0]} />

@@ -7,9 +7,16 @@ import { Session } from 'next-auth';
 interface Props {
   session: Session;
   date: Date | undefined;
+  transcode: (
+    blob: Blob,
+    mimeType: string,
+  ) => Promise<{
+    audioBlob: Blob;
+    audioURL: string;
+  }>;
 }
 
-export default function RecordButton({ session, date }: Props) {
+export default function RecordButton({ session, date, transcode }: Props) {
   const {
     isRecording,
     startRecording,
@@ -19,7 +26,7 @@ export default function RecordButton({ session, date }: Props) {
     audioURL,
     updateSttText,
     analyze,
-  } = useRecord(session, date);
+  } = useRecord(session, date, transcode);
 
   return (
     <section className='flex flex-col items-center'>
@@ -34,7 +41,7 @@ export default function RecordButton({ session, date }: Props) {
         <div className='flex flex-col items-center gap-2'>
           <audio controls src={audioURL}></audio>
           <textarea
-            className='border border-black min-w-full min-h-[250px]'
+            className='border border-black min-w-full min-h-[160px]'
             value={sttText}
             onChange={(e) => updateSttText(e)}
           />

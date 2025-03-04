@@ -1,4 +1,4 @@
-import MainPageContainer from '@/components/main/MainPageContainer';
+import MainPageWrapper from '@/components/main/MainPageWrapper';
 import { authOptions } from '@/utils/authOptions';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
@@ -17,7 +17,7 @@ export default async function Page() {
 
   return (
     <main className='flex flex-col gap-4 justify-start items-center size-full'>
-      <MainPageContainer session={session} />
+      <MainPageWrapper session={session} />
     </main>
   );
 }

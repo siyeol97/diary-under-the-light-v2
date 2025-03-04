@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import useConvertToMP3 from './useConvertToMP3';
 import formatDate from '@/utils/formatDate';
 import getSpeechToText from '@/actions/diary/getSpeechToText';
 import getVoiceModelResult from '@/actions/diary/getVoiceModelResult';
@@ -8,13 +7,22 @@ import { Session } from 'next-auth';
 import getGeminiResponse from '@/actions/diary/getGeminiResponse';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-const useRecord = (session: Session, date: Date | undefined) => {
+const useRecord = (
+  session: Session,
+  date: Date | undefined,
+  transcode: (
+    blob: Blob,
+    mimeType: string,
+  ) => Promise<{
+    audioBlob: Blob;
+    audioURL: string;
+  }>,
+) => {
   const queryClient = useQueryClient();
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태 관리
   const [isIOS, setIsIOS] = useState(false); // iOS 여부 관리
   const [isSafari, setIsSafari] = useState(false); // Safari 여부 관리
-  const { load, transcode } = useConvertToMP3();
   const [audioURL, setAudioURL] = useState<string>(''); // 녹음된 오디오 URL
   const [sttText, setSttText] = useState<string>(''); // 음성을 텍스트로 변환한 텍스트
   const [recordedFile, setRecordedFile] = useState<File | null>(null); // 녹음 데이터 File
@@ -25,7 +33,6 @@ const useRecord = (session: Session, date: Date | undefined) => {
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window),
     );
     setIsSafari(navigator.userAgent.indexOf('Safari') !== -1);
-    load();
   }, []);
 
   // 녹음 시작 함수
@@ -113,6 +120,7 @@ const useRecord = (session: Session, date: Date | undefined) => {
         sttText,
         voiceResult,
         textResult,
+        date!,
       );
       setProcessingText(null);
     }
