@@ -13,7 +13,7 @@ const getSpeechToText = async (audioFile: File) => {
     return result.json();
   } catch (error) {
     console.error(error);
-    throw error;
+    return JSON.stringify(error);
   }
 };
 

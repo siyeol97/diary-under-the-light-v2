@@ -60,7 +60,7 @@ const useRecord = (
         timer.current = null;
       }
 
-      setProcessingText('음성을 텍스트로 변환 중...');
+      setProcessingText('음성 데이터 생성중...');
 
       const recordedBlob = new Blob(chunks, { type: `audio/${mimeType}` }); // 녹음 데이터 Blob 생성
       const { audioBlob, audioURL } = await transcode(recordedBlob, mimeType); // 녹음 데이터 mp3로 변환
@@ -73,6 +73,7 @@ const useRecord = (
       });
 
       setRecordedFile(recorded); // 녹음 데이터 File 업데이트
+      setProcessingText('음성을 텍스트로 변환 중...');
 
       const { text } = await getSpeechToText(recorded); // STT API 호출
 
