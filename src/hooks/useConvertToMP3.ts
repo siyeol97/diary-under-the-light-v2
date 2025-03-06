@@ -35,7 +35,6 @@ const useConvertToMP3 = () => {
       });
 
       setIsLoaded(true);
-      console.log('FFmpeg 로딩 완료');
     } catch (error) {
       console.error('FFmpeg 로딩 실패:', error);
     }

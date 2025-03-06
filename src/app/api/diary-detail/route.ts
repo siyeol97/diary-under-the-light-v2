@@ -24,7 +24,5 @@ export async function GET(request: NextRequest) {
     return Response.error();
   }
 
-  console.log(diaryDetail);
-
   return Response.json(diaryDetail);
 }
