@@ -22,12 +22,19 @@ export default function MainPageContainer({ session, transcode }: Props) {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { data: diaryList, isLoading } = useDiary(session, date);
 
+  // 날짜 토글 방지
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
+
   return (
-    <section className='flex flex-col gap-10 px-5 py-10 w-full'>
+    <section className='flex flex-col gap-8 px-5 pt-10 size-full'>
       <Calendar
         mode='single'
         selected={date}
-        onSelect={setDate}
+        onSelect={handleDateSelect}
         className='rounded-md border'
         disabled={(date) => date > new Date()}
       />
@@ -38,7 +45,7 @@ export default function MainPageContainer({ session, transcode }: Props) {
           <RecordButton session={session} date={date} transcode={transcode} />
         )
       ) : (
-        <DiaryItem session={session} date={date} diary={diaryList[0]} />
+        date && <DiaryItem session={session} date={date} diary={diaryList[0]} />
       )}
     </section>
   );

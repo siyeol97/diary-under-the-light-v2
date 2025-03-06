@@ -16,8 +16,8 @@ export default async function Page() {
   }
 
   return (
-    <main className='flex flex-col gap-4 justify-start items-center size-full'>
+    <section className='flex w-full h-[calc(100%-80px)] overflow-auto'>
       <MainPageWrapper session={session} />
-    </main>
+    </section>
   );
 }
