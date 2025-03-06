@@ -1,4 +1,5 @@
 'use client';
+
 import { Menu } from '@/types/type';
 import { usePathname } from 'next/navigation';
 import MenuItem from './MenuItem';
@@ -6,30 +7,24 @@ import MenuItem from './MenuItem';
 const menu: Menu[] = [
   {
     id: 1,
-    name: 'selfcare',
-    href: '/selfcare',
-    icon: 'heart',
-  },
-  {
-    id: 2,
-    href: '/chart',
-    name: 'statistics',
-    icon: 'chart',
-  },
-  {
-    id: 3,
     name: 'Home',
     href: '/',
     icon: 'calender',
   },
   {
-    id: 4,
-    name: 'diary',
-    href: '/diary',
-    icon: 'diary',
+    id: 2,
+    name: 'selfcare',
+    href: '/selfcare',
+    icon: 'heart',
   },
   {
-    id: 5,
+    id: 3,
+    href: '/chart',
+    name: 'statistics',
+    icon: 'chart',
+  },
+  {
+    id: 4,
     name: 'setting',
     href: '/setting',
     icon: 'setting',
@@ -45,7 +40,11 @@ export default function BottomMenu() {
         <MenuItem
           menu={menu}
           key={menu.id}
-          isActive={currentPath === menu.href}
+          isActive={
+            menu.href === '/'
+              ? currentPath === '/' || currentPath.startsWith('/diary')
+              : currentPath.startsWith(menu.href)
+          }
         />
       ))}
     </section>
